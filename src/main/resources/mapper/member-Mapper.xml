@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suji.basic.mapper.memberMapper">
+	<!-- 로그인 
+			회원은 로그인 기능이 없음
+			직원 계정을 임의로 만들어서 로그인 후 리스트 출력  -->
+	<select id="loginCheck" resultType="MemberVO">
+		select mem_auth,mem_id,mem_pass from member where mem_id =#{memId} and mem_pass =#{memPass}
+	</select>
+	
+	<select id="memberId" parameterType="String" resultType="MemberVO">
+		select mem_id from member where mem_id = #{memId}
+	</select>
+	
+	<insert id="memJoin" parameterType="MemberVO">
+		insert into member (mem_id, mem_pass, mem_name, mem_tall, mem_add)
+		values (
+		#{memId},
+		#{memPass},
+		#{memName},
+		#{memTall},
+		#{memAdd}
+		)
+		
+	</insert>
+</mapper>

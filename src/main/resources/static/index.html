@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>도서 관리 테스트</title>
+<style>
+	* {
+		box-sizing: border-box;
+	}
+	#loginDiv{
+		border:5px solid black;
+		width:400px; 
+		padding-left: 4%;
+		margin-left: 37%;
+		text-align: center;
+		
+	}
+	#bookList{
+		width : 87%;
+		text-align: center;
+		margin-left: 5%;
+	}
+	.modal {
+	    display: none;
+	    position: fixed;
+	    top: 0;
+	    left: 0;
+	    width: 100%;
+	    height: 100%;
+	    background-color: rgba(0, 0, 0, 0.5);
+	}
+
+	.modal-content {
+	    background-color: white;
+	    margin: 15% auto;
+	    padding: 20px;
+	    border: 1px solid gray;
+	    width: 16%;
+	    height: 25%;
+	}
+	#wrapper1{
+		margin: 8% 37% 1% 37%;
+	}
+	
+	#wrapper {
+        width:82%;
+        height:500px;
+        margin:50px auto;
+        text-align: center;
+    }
+    #myGrid {
+        height: 100%;
+    }
+    /* 헤더 텍스트 가운데 정렬 위함 */
+    .centered {
+        .ag-header-cell-label {
+        justify-content: center !important;
+    }
+}
+	
+</style>
+</head>
+<body>
+<div id="wrapper1">
+	<h1>도서관리 시스템 코딩테스트 정수지</h1>
+</div>
+
+<!--로그인 -->
+<div id="loginDiv">
+	
+	<table>
+		<tr>
+			<td>아이디 : </td>
+			<td><input id="memId" placeholder="ID"></td>
+		</tr>
+		<tr>
+			<td>비밀번호 : </td>
+			<td><input type="password" id="memPw" placeholder="PASSWORD"></td>
+		</tr>	
+	</table>
+	<input id="login" type="button" value="로그인">
+	<input id="join" type="button" onclick="fopenJoinM()" value="회원가입">
+</div>
+<div id ="bookList">
+	
+</div>
+
+	<div id="myModalMInsert" class="modal">
+    <div class="modal-content" id="bookInsert" style="height : 18%;">
+			
+		<table border="1">
+		   		<tr>
+					<td>id</td>	   
+					<td><input id="mId"></td>	   
+				</tr>
+		   		<tr>
+					<td>pw</td>	   
+					<td><input type="password"  id="mPw"></td>	   
+				</tr>
+		   		<tr>
+					<td>이름</td>	   
+					<td><input id="mName"></td>	   
+				</tr>
+		   		<tr>
+					<td>전화번호</td>	   
+					<td><input id="mTall"></td>	   
+				</tr>
+				<tr>
+					<td>주소</td>	   
+					<td><input id="mAdd"></td>	   
+				</tr>
+		   		<tr>
+					<td colspan="2" style="text-align: right;" >
+						<button onclick="fMinsert()">등록</button>
+						<button onclick="closeM()">취소</button>
+					</td>	   
+				</tr>
+		   		
+			</table>
+    </div>
+</div>
+
+<div id="myModal" class="modal">
+    <div class="modal-content" id="bookUpdate">
+
+    </div>
+</div>
+
+<div id="myModalRList" class="modal">
+    <div class="modal-content" id="rentalList" style="width : 44%; overflow: auto; text-align: center; ">
+
+    </div>
+</div>
+
+<div id="myModalInsert" class="modal">
+    <div class="modal-content" id="bookInsert">
+			<!-- 여기는 등록 모달 -->
+			
+		<table border="1">
+		   		<tr>
+					<td>도서명</td>	   
+					<td><input id="inName"></td>	   
+				</tr>
+		   		<tr>
+					<td>작가</td>	   
+					<td><input id="inWriter"></td>	   
+				</tr>
+		   		<tr>
+					<td>출판일</td>	   
+					<td><input type="date" id="inDateStr"></td>	   
+				</tr>
+		   		<tr>
+					<td>줄거리</td>	   
+					<td><textarea id="inPlot"></textarea></td>	   
+				</tr>
+		   		<tr>
+					<td colspan="2" style="text-align: right;" >
+						<button onclick="bookInsert()">등록</button>
+						<button onclick="closeM()">취소</button>
+					</td>	   
+				</tr>
+		   		
+			</table>
+    </div>
+</div>
+
+<div id="rentalBookModel" class="modal">
+    <div class="modal-content" id="bookInsert">
+			<!-- 여기는 등록 모달 -->
+			
+		<table border="1">
+		   		<tr>
+					<td>도서코드</td>	   
+					<td id="rBookCode"></td>	   
+				</tr>
+		   		<tr>
+					<td>도서명</td>	   
+					<td id="rBookName"></td>	   
+				</tr>
+		   		<tr>
+					<td>아이디</td>	   
+					<td><input id="rMemId"></td>	
+				</tr>   
+		   		<tr>
+					<td colspan="2" style="text-align: right;" >
+						<button onclick="selectMemId()">확인</button>
+						<button onclick="closeM()">취소</button>
+					</td>	   
+				</tr>
+		   		
+			</table>
+    </div>
+</div>
+
+<div id="rentalBookDiv">
+	
+	
+</div>
+
+<div id="wrapper">
+    <h3> 도서 리스트 </h3>
+    <div style="text-align:right">
+		 <button onclick="fLogOut()">로그아웃</button>
+    </div>
+    <div id="myGrid" class="ag-theme-alpine">
+  </div>
+</div>
+</body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/ag-grid-community/dist/ag-grid-community.min.js"></script>
+
+<script>
+
+	const tableDiv = $("#bookList");	
+	const updateBook = $("#bookUpdate");	
+	const insertBook = $("#bookInsert");	
+	const rList = $("#rentalList");	
+	const vwrapper = $("#wrapper");	
+
+	function fopenJoinM(){
+		$("#myModalMInsert").show();
+	}
+	
+	function fMinsert(){
+		let memId = $("#mId").val();
+		let memPw = $("#mPw").val();
+		let memName = $("#mName").val();
+		let memTall = $("#mTall").val();
+		let memAdd = $("#mAdd").val();
+		let data ={"memId":memId,"memPass":memPw,"memName":memName ,"memTall" : memTall,"memAdd" : memAdd};
+		console.log(memId,memPw,memName,memTall,memAdd);
+		if (!memId || !memPw || !memName || !memTall || !memAdd) {
+		    alert("모든 항목를 입력해주세요.");
+		} else {
+			$.ajax({
+				url: "/api/memJoin",
+				method: "post",
+				dataType: "JSON", 
+	            contentType: 'application/json; charset=utf-8',
+	            data : JSON.stringify(data),
+	            success : function(rslt){
+					alert("가입되었습니다.");
+					closeM();
+					$("#mId").val("");
+					$("#mPw").val("");
+					$("#mName").val("");
+					$("#mTall").val("");
+					$("#mAdd").val("");	
+					
+				},
+				error: function (xhr, status, error) {
+	         		console.log("code: " + xhr.status);
+	         		console.log("message: " + xhr.responseText);
+	         		console.log("error: " + error);
+	      		}
+	      	})
+		
+			}
+	}
+		
+
+// 도서 목록 출력 (관리자용) -> 도서등록 , 도서수정, 대여이력확인, 대여등록, 반납
+
+    function bookList(){
+	    let text = ""
+        $.ajax({
+            url: "/api/books", 
+            method: "GET", // 
+            dataType: "JSON", 
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                console.log("Received Data: 데이터가 하나도 없나봐");
+                console.log("Received Data:", data);
+                text += "<h3>도서 리스트</h3>";
+		        text += `
+		        		<div style="text-align:right">
+		        		<button onclick="fLogOut()">로그아웃</button>
+		        		</div>`;
+		        		
+                text += `<table border="1"style="width: 100%;" >
+							<tr>		
+								<th>NO.</th>
+								<th>도서 코드</th>
+								<th>도서명</th>
+								<th>작가</th>
+								<th>출판일</th>
+								<th>줄거리</th>
+								<th>대출상태</th>
+								<th>대출 이력</th>
+								<th>수정</th>
+							</tr>`;
+	                for (let i = 0; i < data.length; i++) {
+		                text += "<tr>";
+		                text += "<td>" + (i+1) + "</td>";
+		                text += "<td>" + data[i].bookCode + "</td>";
+		                text += "<td>" + data[i].bookName + "</td>";
+		                text += "<td>" + data[i].bookWriter + "</td>";
+		                text += "<td>" + data[i].bookDateStr + "</td>";
+		                text += "<td>" + data[i].bookPlot + "</td>";
+		                if(data[i].bookYn == 'N'){
+		                	text += `<td><button onclick='frentalBook("${data[i].bookCode}","${data[i].bookName}")'> 대여가능 </button></td>`;
+							
+						}else{
+							text += `<td><button onclick='freturnBook("${data[i].bookCode}")'> 대여중 </button></td>`;
+						}
+		                text += `<td><button onclick='selectRBook("${data[i].bookCode}")'>확인</button></td>`;
+		                text += `<td><button onclick='updateOpenM("${data[i].bookCode}","${data[i].bookName}","${data[i].bookWriter}","${data[i].bookDateStr}","${data[i].bookPlot}")'>도서수정</button></td>`;
+						text += "</tr>";
+						
+		            }
+					text += "</table>";
+					text += `
+							<div style ="width : 100%; text-align:right" >
+							<button onclick='fBookInsert()'>도서등록</button>
+							</div>`;
+							
+	            
+	            	tableDiv.html(text);
+            },
+            error: function (xhr, status, error) {
+         		console.log("code: " + xhr.status);
+         		console.log("message: " + xhr.responseText);
+         		console.log("error: " + error);
+      		}
+        });
+    };
+    function freturnBook(bookCode){
+		
+		alert("반납되었습니다.");
+		$.ajax({
+			url: "/api/rentalBook/"+bookCode,
+			method: "put",
+			dataType: "JSON",
+            contentType: 'application/json; charset=utf-8',
+            success : function(rslt){
+				console.log("rslt",rslt);
+				bookList();
+			},
+			error: function (xhr, status, error) {
+         		console.log("code: " + xhr.status);
+         		console.log("message: " + xhr.responseText);
+         		console.log("error: " + error);
+      		}
+		})
+	}
+	
+	
+    function selectRBook(bookCode){
+		$("#myModalRList").show();
+		console.log("확인할게요 ", bookCode);
+		let text = "";
+		
+		$.ajax({
+			url: "/api/rentalBookSelect",
+			method: "get",
+			dataType: "JSON",
+            contentType: 'application/json; charset=utf-8',
+            data : { bookCode: bookCode },
+            success : function(rslt){
+				console.log("rslt",rslt);
+				text += `<h3> 도서 코드 : ${bookCode}</h3>`;
+				text += `<table border="1" style=" overflow-y: scroll; width: 100%;">
+							<tr>
+								<th>NO.</th>
+								<th>대출번호</th>
+								<th>회원 ID</th>
+								<th>대출일</th>	  
+								<th>반납일(예정)</th>	  	   
+							</tr>`;
+				if(rslt ==""){
+					text += `
+					   		<tr>
+								<td colspan="5">이력이 없습니다.</td>	   
+							</tr>`;
+							
+				}else{
+					$.each(rslt, function(index,i){
+					   text += `
+					   		
+					   		<tr>
+								<td>${index+1}</td>	   
+								<td>${i.rentalNum}</td>	   
+								<td>${i.memId}</td>	   
+								<td>${i.rentalSdateStr}</td>	   
+								<td>${i.rentalRdateStr}</td>	   
+							</tr>`;
+					   		
+				   });
+				}
+	   			
+				text += `</table>
+						<div style="width : 100%; text-align:right">
+							<button onclick="closeM()">닫기</button>
+						</div>
+						`;
+								
+			    rList.html(text);
+				
+			},
+			error: function (xhr, status, error) {
+         		console.log("code: " + xhr.status);
+         		console.log("message: " + xhr.responseText);
+         		console.log("error: " + error);
+      		}
+		})
+	}
+    function frentalBook(bookCode,bookName){
+		console.log("확인 ==>" ,bookCode);
+		console.log("확인 ==>" ,bookName);
+		$("#rentalBookModel").show();
+		$("#rBookCode").html(bookCode);
+		$("#rBookName").html(bookName);
+		
+	}
+	
+	function selectMemId (){
+		let rentalMId = $("#rMemId").val();
+		
+		if (rentalMId==""){
+			alert("회원 아이디를 입력해 주세요");
+			return;
+		}
+		$.ajax({
+			url:"/api/selectMemId/"+rentalMId,
+			method: "get",
+			dataType: "text",
+            contentType: 'application/json; charset=utf-8',
+            success : function(rslt){
+				if (rslt == "") {
+                	alert("존재하지 않는 id 입니다.");
+                	$("#rMemId").val("");
+               		return;
+            	} else {
+                	rentalBookupdate();
+            	}
+				
+			},
+			error: function (xhr, status, error) {
+         		console.log("code: " + xhr.status);
+         		console.log("message: " + xhr.responseText);
+         		console.log("error: " + error);
+      		}
+			
+		})
+	}
+	function rentalBookupdate(){
+		
+		let reantalBCode = $("#rBookCode").text();
+		let rentalMId = $("#rMemId").val();
+		
+		console.log("확인 할게요 !!! ",reantalBCode ,rentalMId);
+		let data ={"bookCode":reantalBCode,"memId":rentalMId};
+		console.log("data" ,data);
+		$.ajax({
+			url: "/api/rentalBookInster",
+			method: "post",
+			dataType: "JSON",
+            contentType: 'application/json; charset=utf-8',
+            data : JSON.stringify(data),
+            success : function(rslt){
+				alert("등록되었습니다.");
+				closeM();
+				$("#rMemId").val("");
+				bookList();
+			},
+			error: function (xhr, status, error) {
+         		console.log("code: " + xhr.status);
+         		console.log("message: " + xhr.responseText);
+         		console.log("error: " + error);
+      		}
+		})
+	}
+    function fBookInsert(){
+		$("#myModalInsert").show();
+	}
+    function bookInsert(){
+		
+		let insertName = $("#inName").val();
+		let insertWriter = $("#inWriter").val();
+		let insertPlot = $("#inPlot").val();
+		let date = $("#inDateStr").val();
+		
+		console.log("데이터 확인해보자", insertName, insertWriter, insertPlot,inDateStr);
+		
+		let data ={"bookName":insertName,"bookWriter":insertWriter,"bookPlot":insertPlot ,"bookDateStr" : date};
+		$.ajax({
+			url: "/api/insertBook",
+			method: "post",
+			dataType: "JSON", 
+            contentType: 'application/json; charset=utf-8',
+            data : JSON.stringify(data),
+            success : function(rslt){
+				alert("도서가 등록되었습니다.");
+				bookList();
+				closeM();
+				$("#inName").val("");
+				$("#inWriter").val("");
+				$("#inPlot").val("");
+				$("#inDateStr").val("");
+				
+				
+			},
+			error: function (xhr, status, error) {
+         		console.log("code: " + xhr.status);
+         		console.log("message: " + xhr.responseText);
+         		console.log("error: " + error);
+      		}
+			
+		})
+		
+	}
+    
+    
+    function updateOpenM(bookCode,bookName,bookWriter,bookDateStr,bookPlot) {
+	   $('#myModal').show();
+	   console.log("bookCode",bookName);
+	   console.log("bookCode",bookWriter);
+	   console.log("bookCode",bookDateStr);
+	   console.log("bookCode",bookPlot);
+	   
+	   text = "";
+	   
+	   text += `<table border="1">
+			   		<tr>
+						<td>도서코드</td>	   
+						<td><input id="upCode" readonly value="${bookCode}"></td>	   
+					</tr>
+			   		<tr>
+						<td>도서명</td>	   
+						<td><input id="upName" value="${bookName}"></td>	   
+					</tr>
+			   		<tr>
+						<td>작가</td>	   
+						<td><input id="upWriter" value="${bookWriter}"></td>	   
+					</tr>
+			   		<tr>
+						<td>출판일</td>	   
+						<td><input id="upDateStr" value="${bookDateStr}"></td>	   
+					</tr>
+			   		<tr>
+						<td>줄거리</td>	   
+						<td><textarea id="upPlot">${bookPlot}</textarea></td>	   
+					</tr>
+			   		<tr>
+						<td colspan="2" style="text-align: right;" >
+							<button onclick="bookUpdate()">등록</button>
+							<button onclick="closeM()">취소</button>
+						</td>	   
+					</tr>
+			   		
+				</table>`;
+				
+				
+	   updateBook.html(text);
+	   
+	}
+
+	function bookUpdate(){
+		let bookName = $("#upName").val();
+		let bookCode = $("#upCode").val();
+		let bookWriter = $("#upWriter").val();
+		let bookDate = $("#upDateStr").val();
+		let bookPlot = $("#upPlot").val();
+		console.log("업데이트 변경 값 " , bookName);
+		console.log("업데이트 변경 값 " , bookWriter);
+		console.log("업데이트 변경 값 " , bookDate);
+		console.log("업데이트 변경 값 " , bookPlot);
+		
+		let data ={"bookCode" : bookCode,"bookName" : bookName, "bookWriter" : bookWriter,"bookDateStr" : bookDate, "bookPlot" : bookPlot};
+		$.ajax({
+			url: "/api/updateBook",
+			type : "put",
+			dataType : "json",
+			data : JSON.stringify(data),
+			contentType:"application/json;charset=utf-8",
+			success : function(rslt){
+				console.log("rslt업데이트 ???" , rslt);
+				if(rslt = 1){
+					alert("수정되었습니다.")
+				closeM();
+				bookList();
+				}
+			},
+			error: function (xhr, status, error) {
+         		console.log("code: " + xhr.status);
+         		console.log("message: " + xhr.responseText);
+         		console.log("error: " + error);
+      		}
+			
+		})
+	}
+	
+	// 도서 목록 출력 --> 고객용 대여 가능 도서 확인만 가능
+    function bookListMem(memId){
+	    let text = ""
+        $.ajax({
+            url: "/api/books", 
+            method: "GET", // 
+            dataType: "JSON", 
+            contentType: 'application/json; charset=utf-8',
+            success: function (data) {
+                console.log("Received Data:", data);
+                for (let i = 0; i < data.length; i++) {
+					
+					if(data[i].bookYn == "Y"){
+						data[i].bookYn = "대여불가능"
+					}else{
+						data[i].bookYn = "대여 가능"
+					}
+				}
+                gridOptions.api.setRowData(data);
+		        /*text += "<h3>도서 리스트</h3>";
+		        text += `
+		        		<div style="text-align:right">
+		        		<button onclick="fLogOut()">로그아웃</button>
+		        		</div>`;
+                text += `<table border="1"style="width: 100%;" >
+							<tr>		
+								<th>NO.</th>
+								<th>도서 코드</th>
+								<th>도서명</th>
+								<th>작가</th>
+								<th>출판일</th>
+								<th>줄거리</th>
+								<th>대출상태</th>
+							</tr>`;
+	                for (let i = 0; i < data.length; i++) {
+		                text += "<tr>";
+		                text += "<td>" + (i+1) + "</td>";
+		                text += "<td>" + data[i].bookCode + "</td>";
+		                text += "<td>" + data[i].bookName + "</td>";
+		                text += "<td>" + data[i].bookWriter + "</td>";
+		                text += "<td>" + data[i].bookDateStr + "</td>";
+		                text += "<td>" + data[i].bookPlot + "</td>";
+		                if(data[i].bookYn == 'N'){
+		                	text += "<td>대여가능</td>";
+							
+						}else{
+							text += "<td>대여중</td>";
+						}
+						text += "</tr>";
+						
+		            }
+					
+					text += "</table>";
+							
+	            
+		            
+	            	tableDiv.html(text);*/
+            },
+            error: function (xhr, status, error) {
+         		console.log("code: " + xhr.status);
+         		console.log("message: " + xhr.responseText);
+         		console.log("error: " + error);
+      		}
+        });
+    };	
+
+	
+    function login(){
+		$("#login").on("click",function(){
+			let memId= $("#memId").val()
+            let memPass = $("#memPw").val()
+            if(memId =="" && memPass == ""){
+				alert("아이디와 패스워드를 입력해 주세요");
+				$("#memId").val(""); 
+   				$("#memPw").val("");
+   				return;
+			}else if(memId ==""){
+				alert("아이디를 입력해 주세요");
+				$("#memPw").val("");
+				return;
+			}else if(memPass ==""){
+				alert("패스워드를 입력해 주세요");
+				$("#memId").val("");
+				return;
+			}
+		    var loginData = {
+            				memId,memPass
+       					 	};
+         console.log("아이디",$("#memId").val())
+         console.log("비밀번호",$("#memPw").val())
+         $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "api/login",
+            data: JSON.stringify(loginData),
+            success: function (rslt) {
+                console.log("되냐구" , rslt)
+                console.log("되냐구" , rslt.memAuth)
+                if (rslt != null && rslt!="") {
+		            // 로그인 성공
+		            $("#loginDiv").hide();
+		            alert("로그인되었습니다");
+		            if(rslt.memAuth == 1){
+						bookList();
+					}else if(rslt.memAuth == 2){
+						$("#wrapper").show();	
+						bookListMem();
+					}				
+				}else{
+					alert("아이디와 비밀번호를 확인해 주세요")
+					$("#memId").val(""); 
+   					$("#memPw").val("");
+		        }
+		        
+		    },
+				
+            error: function (xhr, status, error) {
+         		console.log("code: " + xhr.status);
+         		console.log("message: " + xhr.responseText);
+         		console.log("error: " + error);
+      		}
+        });
+    });
+}
+	function fLogOut(){
+		window.location.href = 'index.html';
+	
+	}
+	function closeM(){
+		$('#myModal').hide();
+		$('#myModalInsert').hide();
+		$("#rentalBookModel").hide();
+		$("#myModalMInsert").hide();
+		$("#myModalRList").hide();
+		
+	}
+		//===================================================================
+		const columnDefs = [
+	  { field: "bookCode",  headerName:"도서코드",sortable:true},
+	  { field: "bookName", headerName:"도서명",sortable:true,cellStyle: {textAlign: "left"}},
+	  { field: "bookWriter", headerName:"작가명",sortable:true,cellStyle: {textAlign: "left"}},
+	  { field: "bookDateStr", headerName:"출판일",sortable:true,cellStyle: {textAlign: "left"}},
+	  { field: "bookPlot", headerName:"줄거리",cellStyle: {textAlign: "left"}},
+	  { field: "bookYn", headerName:"대여가능여부",cellRenderer:MyComp}
+	];
+	
+	// 일단 빈 데이터 설정(초기값), 설정 안하면 주구창창 로딩중 메세지
+	const rowData = [];  
+	
+	// 설정 옵션: 중요, 위에 정의한 것들이 여기서 통합됨에 주목
+	const gridOptions = {
+	  columnDefs: columnDefs,
+	  rowData: rowData,
+	  defaultColDef: {
+	    flex:1,       // 자동으로 같은 사이즈롱
+	    filter:true,
+	    resizable:true,
+	    minWidth:100,
+	    headerClass: "centered"
+	
+	  },
+	  // 페이지 설정
+	  pagination:true,
+	  //paginationAutoPageSize:true,
+	  paginationPageSize:9,    // 같이 설정하니 위에 꺼 우선순위
+	  onCellClicked: params => {
+	    console.log('cell was clicked',params);
+	    //alert("클릭하신 값은: " + params.value); //요게 있음 뭔가? 방해됨
+	  }
+	};
+	
+	// 그리드 셋업
+	document.addEventListener('DOMContentLoaded', () => {
+	  const gridDiv = document.querySelector('#myGrid');
+	  new agGrid.Grid(gridDiv, gridOptions);
+	  bookListMem();  // 데이터 불러오깅
+	}); 
+	
+	
+	function MyComp() {
+	    return this;
+	}
+	
+	// AG-GRID 문서에 나오는 커스텀 Cell Renderer
+	MyComp.prototype.init = function(params) {
+	        this.eGui = document.createElement('div');
+	        this.eGui.innerHTML = `
+	            <input type="date" value="" class="myCal" style="border:0px;width:0px"> 
+	            <span class="mySpan">${params.value}</span> 
+	        `;
+	        
+	        this.myCal = this.eGui.querySelector('.myCal')
+	        this.mySpan = this.eGui.querySelector('.mySpan')
+	        this.mySpan.onclick = () => {
+	            this.myCal.showPicker();
+	        }
+	        this.myCal.onchange = ()=> {
+	            console.log("check",this.myCal.value);
+	            this.mySpan.innerHTML = this.myCal.value;
+	        }
+	}
+	MyComp.prototype.getGui=function(){
+	    console.log("check1");
+	    return this.eGui;
+	}
+	
+	MyComp.prototype.refresh=function(){
+	    console.log("check2");
+	    return true;
+	    
+	}
+	
+	MyComp.prototype.destroy=function(){
+	    console.log("check3");
+	} 
+	
+	
+	
+	
+	//===================================================================
+
+$(document).ready(function () {
+		login();
+		closeM();
+		//bookList();
+		$("#wrapper").hide();	
+	})
+</script>
+</html>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.suji.basic.mapper.bookMapper">
+
+	<select id="selectAllbook"  resultType="BookVO">
+		select BOOK_CODE, BOOK_NAME, TO_CHAR(BOOK_DATE, 'YY-MM-DD') AS BOOK_DATESTR, BOOK_WRITER, BOOK_YN, BOOK_PLOT from BOOK
+		order by BOOK_CODE desc
+	</select>
+	
+	<update id="updateBook" parameterType="BookVO">
+		update book set  book_name =#{bookName}, book_date=TO_DATE(#{bookDateStr},'YY-MM-DD'), book_writer=#{bookWriter}, book_plot=#{bookPlot}
+		where book_code = #{bookCode}
+	</update>
+	
+	<insert id="insertBook" parameterType="BookVO">
+		insert into book( book_code,
+						  book_name,
+						  book_date,
+						  book_writer,
+						  book_plot)
+		values ( TO_CHAR(sysdate, 'YYYYMMDD') || 'B' ||LPAD(book_num_sequence.NEXTVAL, 3, '0'),
+				  #{bookName},
+				  TO_DATE(#{bookDateStr},'YY-MM-DD'),
+				  #{bookWriter},
+				  #{bookPlot}
+				  )
+	</insert>
+	
+	<update id="updateBookYN" parameterType="String">
+		update book set book_yn ='Y'
+		where book_code = #{bookCode}
+	</update>
+	<update id="updateBookreturn" parameterType="String">
+		update book set book_yn ='N'
+		where book_code = #{bookCode}
+	</update>
+	
+</mapper>
+ 
